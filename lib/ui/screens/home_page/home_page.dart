@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flappy_bird/ui/screens/home_page/components/barriers.dart';
 import 'package:flappy_bird/ui/screens/home_page/components/bird.dart';
 import 'package:flappy_bird/ui/theme/AppColors.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void startGame() {
+    gameHasStarted = true;
     Timer.periodic(const Duration(milliseconds: 50), (timer) {
       time += 0.04;
       height = -4.9 * time * time + 2.8 * time;
@@ -37,8 +39,8 @@ class _HomePageState extends State<HomePage> {
       }
       if (birdYaxis > 1) {
         timer.cancel();
+        gameHasStarted = true;
         // setState(() {
-          gameHasStarted = true;
         // });
       }
     });
@@ -51,23 +53,38 @@ class _HomePageState extends State<HomePage> {
         children: [
           Expanded(
               flex: 4,
-              child: GestureDetector(
-                onTap: () {
-                  if (gameHasStarted) {
-                    debugPrint("pressed");
-                    jump();
-                  } else {
-                    debugPrint("starting press");
-                    startGame();
-                  }
-                },
-                child: AnimatedContainer(
-                  alignment: Alignment(0, birdYaxis),
-                  duration: const Duration(milliseconds: 0),
-                  color: AppColors.blue,
-                  child: const MyFlappy(),
+              child: Stack(children: [
+                GestureDetector(
+                    onTap: () {
+                      if (gameHasStarted) {
+                        debugPrint("pressed");
+                        jump();
+                      } else {
+                        debugPrint("starting press");
+                        startGame();
+                      }
+                    },
+                    child: AnimatedContainer(
+                      alignment: Alignment(0, birdYaxis),
+                      duration: const Duration(milliseconds: 0),
+                      color: AppColors.blue,
+                      child: const MyFlappy(),
+                    )),
+                Container(
+                  alignment: Alignment(0, -0.3),
+                  child: gameHasStarted
+                      ? null
+                      : const Text(
+                          "T A P   T O   P L A Y",
+                          style:
+                              TextStyle(fontSize: 30, color: AppColors.white),
+                        ),
                 ),
-              )),
+                AnimatedContainer(
+                  alignment: Alignment(0.0, 1),
+                    duration: Duration(milliseconds: 0),
+                    child: MyBarrier(size: 200.0))
+              ])),
           Container(
             height: 15,
             color: AppColors.green,

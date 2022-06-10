@@ -11,9 +11,9 @@ class MyBarrier extends StatelessWidget {
     return Container(
       width: 100,
       height: size,
-      decoration: const BoxDecoration(
-        color: AppColors.green,
-      ),
+      decoration: BoxDecoration(
+          color: AppColors.green,
+          border: Border.all(width: 10, color: AppColors.darkGreen)),
     );
   }
 }
