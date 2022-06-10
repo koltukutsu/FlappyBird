@@ -1,7 +1,8 @@
 import "package:flutter/material.dart";
 
 class MyFlappy extends StatelessWidget {
-  const MyFlappy({Key? key}) : super(key: key);
+  const MyFlappy({Key? key, required this.face}) : super(key: key);
+  final String face;
 
   @override
   Widget build(BuildContext context) {
@@ -9,7 +10,8 @@ class MyFlappy extends StatelessWidget {
       height: 60,
       width: 60,
       child: Image.asset(
-        "lib/images/flappy_face.png",
+        face
+        // "lib/images/flappy_face.png",
         // height: 48,
         // width: 48,
       ),

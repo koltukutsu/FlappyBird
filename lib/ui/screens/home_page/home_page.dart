@@ -1,5 +1,6 @@
 import 'dart:async';
-
+import "dart:math";
+import 'package:glob/glob.dart';
 import 'package:flappy_bird/ui/screens/home_page/components/barriers.dart';
 import 'package:flappy_bird/ui/screens/home_page/components/bird.dart';
 import 'package:flappy_bird/ui/theme/AppColors.dart';
@@ -18,10 +19,39 @@ class _HomePageState extends State<HomePage> {
   double height = 0;
   late double initialHeight = birdYaxis;
   bool gameHasStarted = false;
+  String changingFace = "lib/images/flappy_face.png";
+  int score = 0;
+  int bestScore = 0;
+
+  void changeFace() {
+    // final faces = Glob("**").listSync();
+    // debugPrint(faces.toString());
+    // final random = Random();
+    // var element = faces[random.nextInt(faces.length)].path;
+    // debugPrint("this is : " + element.toString());
+    // setState(() {});
+    final faces = [
+      "lib/images/ahmet_2_son.png",
+      "lib/images/ahmet_son.png",
+      "lib/images/gercek_semih_son.png",
+      "lib/images/ismail_son.png",
+      "lib/images/ismail_son_2.png",
+      "lib/images/semih_2_son.png",
+      "lib/images/semih_son.png",
+    ];
+    final randomSeed = Random();
+    var faceElement = faces[randomSeed.nextInt(faces.length)];
+    debugPrint(faceElement);
+    setState(() {
+      changingFace = faceElement;
+    });
+  }
 
   void jump() {
+    changeFace();
     setState(() {
       time = 0;
+      score += score;
       initialHeight = birdYaxis;
     });
   }
@@ -39,9 +69,11 @@ class _HomePageState extends State<HomePage> {
       }
       if (birdYaxis > 1) {
         timer.cancel();
-        gameHasStarted = true;
-        // setState(() {
-        // });
+        gameHasStarted = false;
+
+        setState(() {
+          birdYaxis = 0;
+        });
       }
     });
   }
@@ -68,10 +100,12 @@ class _HomePageState extends State<HomePage> {
                       alignment: Alignment(0, birdYaxis),
                       duration: const Duration(milliseconds: 0),
                       color: AppColors.blue,
-                      child: const MyFlappy(),
+                      child: MyFlappy(
+                        face: changingFace,
+                      ),
                     )),
                 Container(
-                  alignment: Alignment(0, -0.3),
+                  alignment: const Alignment(0, -0.3),
                   child: gameHasStarted
                       ? null
                       : const Text(
@@ -81,9 +115,9 @@ class _HomePageState extends State<HomePage> {
                         ),
                 ),
                 AnimatedContainer(
-                  alignment: Alignment(0.0, 1),
-                    duration: Duration(milliseconds: 0),
-                    child: MyBarrier(size: 200.0))
+                    alignment: const Alignment(0.0, 1),
+                    duration: const Duration(milliseconds: 0),
+                    child: const MyBarrier(size: 200.0))
               ])),
           Container(
             height: 15,
@@ -98,37 +132,37 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text(
+                      children: [
+                        const Text(
                           "Score",
                           style:
                               TextStyle(color: AppColors.white, fontSize: 20),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 15,
                         ),
                         Text(
-                          "0",
-                          style:
-                              TextStyle(color: AppColors.white, fontSize: 35),
+                          score.toString(),
+                          style: const TextStyle(
+                              color: AppColors.white, fontSize: 35),
                         )
                       ],
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text(
+                      children: [
+                        const Text(
                           "Best",
                           style:
                               TextStyle(color: AppColors.white, fontSize: 20),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 15,
                         ),
                         Text(
-                          "0",
-                          style:
-                              TextStyle(color: AppColors.white, fontSize: 35),
+                          bestScore.toString(),
+                          style: const TextStyle(
+                              color: AppColors.white, fontSize: 35),
                         )
                       ],
                     ),
