@@ -15,18 +15,41 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // assets
   AudioPlayer audioPlayer = AudioPlayer();
   String changingFace = "lib/assets/images/flappy_face.png";
+
+  //score related variables
   int score = 0;
   int bestScore = 0;
   late String bestScoreImagePath;
   late String bestScoreSoundPath;
+
+  // our bird or flappyFace and its motion related variables
   double birdYaxis = 0;
   double time = 0;
   double height = 0;
-  double barrierX1 = 1;
   late double initialHeight = birdYaxis;
-  late double barrierX2 = barrierX1 + 1.7;
+  double velocity = 2.8;
+  double acceleration = -4.9;
+
+  //flex related variables
+  int skyFlexRatio = 4;
+  int groundFlexRatio = 1;
+
+  // barriers
+  double barrierX1 = 1; // out of 2 total
+  double barrierX2 = 2.7;
+  double barrierYRatioBottom = -1.1;
+  double barrierYRatioSky = 1.1;
+
+  double barrierX1WidthRatio = 0.2;
+  double barrierX1HeightRatio = 0.5;
+
+  double barrierX2WidthRatio = 0.2;
+  double barrierX2HeightRatio = 0.6;
+
+  // game conditions
   bool gameHasStarted = false;
   bool gameEnded = false;
 
@@ -52,7 +75,7 @@ class _HomePageState extends State<HomePage> {
       score = 0;
       // int bestScore = 0;
       barrierX1 = 1;
-      double barrierX2 = barrierX1 + 1.7;
+      barrierX2 = 2.7;
     });
   }
 
@@ -145,7 +168,7 @@ class _HomePageState extends State<HomePage> {
     });
     Timer.periodic(const Duration(milliseconds: 40), (timer) {
       time += 0.04;
-      height = -4.9 * time * time + 2.8 * time;
+      height = acceleration * time * time + velocity * time;
       setState(() {
         birdYaxis = initialHeight - height;
       });
@@ -166,8 +189,7 @@ class _HomePageState extends State<HomePage> {
 
       if (birdYaxis < -1.1 || birdYaxis > 1.1) {
         timer.cancel();
-        faceDead();
-        // resetGame();
+        resetGame();
       }
     });
   }
@@ -178,13 +200,16 @@ class _HomePageState extends State<HomePage> {
         onTap: () {
           debugPrint("game started: " + gameHasStarted.toString());
           if (gameEnded) {
+            print(1);
             changeGameText();
             resetGame();
           } else if (gameHasStarted) {
+            print(2);
             gameHasStarted = gameHasStarted ? true : false;
             debugPrint("game continues");
             jump();
           } else {
+            print(3);
             debugPrint("game is started");
             startGame();
           }
@@ -193,7 +218,7 @@ class _HomePageState extends State<HomePage> {
           body: Column(
             children: [
               Expanded(
-                  flex: 4,
+                  flex: skyFlexRatio,
                   child: Stack(children: [
                     AnimatedContainer(
                       alignment: Alignment(0, birdYaxis),
@@ -204,21 +229,41 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     AnimatedContainer(
-                        alignment: Alignment(barrierX1, 1.1),
+                        alignment: Alignment(barrierX1, barrierYRatioBottom),
                         duration: const Duration(milliseconds: 0),
-                        child: const MyBarrier(size: 200.0)),
+                        child: MyBarrier(
+                          widthRatio: barrierX1WidthRatio,
+                          heightRatio: barrierX1HeightRatio,
+                          skyFlexRatio: skyFlexRatio,
+                          groundFlexRatio: groundFlexRatio,
+                        )),
                     AnimatedContainer(
-                        alignment: Alignment(barrierX1, -1.1),
+                        alignment: Alignment(barrierX1, barrierYRatioSky),
                         duration: const Duration(milliseconds: 0),
-                        child: const MyBarrier(size: 200.0)),
+                        child: MyBarrier(
+                          widthRatio: barrierX1WidthRatio,
+                          heightRatio: barrierX1HeightRatio,
+                          skyFlexRatio: skyFlexRatio,
+                          groundFlexRatio: groundFlexRatio,
+                        )),
                     AnimatedContainer(
-                        alignment: Alignment(barrierX2, 1.1),
+                        alignment: Alignment(barrierX2, barrierYRatioBottom),
                         duration: const Duration(milliseconds: 0),
-                        child: const MyBarrier(size: 250.0)),
+                        child: MyBarrier(
+                          widthRatio: barrierX2WidthRatio,
+                          heightRatio: barrierX2HeightRatio,
+                          skyFlexRatio: skyFlexRatio,
+                          groundFlexRatio: groundFlexRatio,
+                        )),
                     AnimatedContainer(
-                        alignment: Alignment(barrierX2, -1.1),
+                        alignment: Alignment(barrierX2, barrierYRatioSky),
                         duration: const Duration(milliseconds: 0),
-                        child: const MyBarrier(size: 250.0)),
+                        child: MyBarrier(
+                          widthRatio: barrierX2WidthRatio,
+                          heightRatio: barrierX2HeightRatio,
+                          skyFlexRatio: skyFlexRatio,
+                          groundFlexRatio: groundFlexRatio,
+                        )),
                     Container(
                       alignment: const Alignment(0, -0.3),
                       child: !gameHasStarted && !gameEnded
@@ -255,7 +300,7 @@ class _HomePageState extends State<HomePage> {
                 color: AppColors.green,
               ),
               Expanded(
-                  flex: 1,
+                  flex: groundFlexRatio,
                   child: Container(
                     color: AppColors.brown,
                     child: Row(

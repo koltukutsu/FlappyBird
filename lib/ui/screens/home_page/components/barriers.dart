@@ -2,15 +2,22 @@ import 'package:flappy_bird/ui/theme/AppColors.dart';
 import 'package:flutter/material.dart';
 
 class MyBarrier extends StatelessWidget {
-  final size;
+  final double heightRatio;
+  final double widthRatio;
+  final int skyFlexRatio;
+  final int groundFlexRatio;
 
-  const MyBarrier({this.size});
+  const MyBarrier(
+      {required this.heightRatio,
+      required this.widthRatio,
+      required this.skyFlexRatio,
+      required this.groundFlexRatio});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 100,
-      height: size,
+      height: MediaQuery.of(context).size.width * heightRatio * skyFlexRatio / (skyFlexRatio + groundFlexRatio),
+      width: MediaQuery.of(context).size.width * widthRatio,
       decoration: BoxDecoration(
           color: AppColors.green,
           border: Border.all(width: 10, color: AppColors.darkGreen),

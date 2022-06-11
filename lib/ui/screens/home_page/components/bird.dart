@@ -7,10 +7,10 @@ class MyFlappy extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 60,
-      width: 60,
       child: Image.asset(
-        face
+        face,
+        height: 60,
+        width: 60,
         // "lib/assets/flappy_face.png",
         // height: 48,
         // width: 48,
