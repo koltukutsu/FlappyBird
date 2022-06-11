@@ -154,9 +154,6 @@ class _HomePageState extends State<HomePage> {
         }
       });
 
-      // if (birdYaxis < -1.5) {
-      //   birdYaxis = -1.5;
-      // }
       if (birdYaxis < -1.1 || birdYaxis > 1.1) {
         timer.cancel();
 
