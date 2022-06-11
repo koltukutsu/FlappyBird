@@ -221,13 +221,13 @@ class _HomePageState extends State<HomePage> {
                         child: const MyBarrier(size: 250.0)),
                     Container(
                       alignment: const Alignment(0, -0.3),
-                      child: gameHasStarted && gameEnded
-                          ? null
-                          : const Text(
+                      child: !gameHasStarted && !gameEnded
+                          ? const Text(
                               "B A Ş L A",
                               style: TextStyle(
                                   fontSize: 30, color: AppColors.white),
-                            ),
+                            )
+                          : null,
                     ),
                     Container(
                       alignment: const Alignment(0, -0.3),
