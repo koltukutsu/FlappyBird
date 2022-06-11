@@ -11,7 +11,7 @@ class MyFlappy extends StatelessWidget {
       width: 60,
       child: Image.asset(
         face
-        // "lib/images/flappy_face.png",
+        // "lib/assets/flappy_face.png",
         // height: 48,
         // width: 48,
       ),

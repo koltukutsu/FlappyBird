@@ -16,7 +16,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   AudioPlayer audioPlayer = AudioPlayer();
-  String changingFace = "lib/images/flappy_face.png";
+  String changingFace = "lib/assets/images/flappy_face.png";
   int score = 0;
   int bestScore = 0;
   late String bestScoreImagePath;
@@ -28,10 +28,17 @@ class _HomePageState extends State<HomePage> {
   late double initialHeight = birdYaxis;
   late double barrierX2 = barrierX1 + 1.7;
   bool gameHasStarted = false;
+  bool gameEnded = false;
 
   @override
   initState() {
     getBestScoreAttributes();
+  }
+
+  void changeGameText() {
+    setState(() {
+      gameEnded = false;
+    });
   }
 
   void resetGame() {
@@ -41,7 +48,7 @@ class _HomePageState extends State<HomePage> {
       height = 0;
       initialHeight = birdYaxis;
       gameHasStarted = false;
-      // changingFace = "lib/images/flappy_face.png";
+      // changingFace = "lib/assets/flappy_face.png";
       score = 0;
       // int bestScore = 0;
       barrierX1 = 1;
@@ -81,13 +88,13 @@ class _HomePageState extends State<HomePage> {
 
   void changeFace() {
     final faces = [
-      "lib/images/ahmet_2_son.png",
-      "lib/images/ahmet_son.png",
-      "lib/images/gercek_semih_son.png",
-      "lib/images/ismail_son.png",
-      "lib/images/ismail_son_2.png",
-      "lib/images/semih_2_son.png",
-      "lib/images/semih_son.png",
+      "lib/assets/images/ahmet_2_son.png",
+      "lib/assets/images/ahmet_son.png",
+      "lib/assets/images/gercek_semih_son.png",
+      "lib/assets/images/ismail_son.png",
+      "lib/assets/images/ismail_son_2.png",
+      "lib/assets/images/semih_2_son.png",
+      "lib/assets/images/semih_son.png",
     ];
     final randomSeed = Random();
     faces.remove(changingFace);
@@ -109,6 +116,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   bool faceDead() {
+    setState(() {
+      gameEnded = true;
+    });
     if (birdYaxis < -1.1 || birdYaxis > 1.1) {
       print("1");
       return true;
@@ -133,21 +143,21 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       gameHasStarted = true;
     });
-    Timer.periodic(const Duration(milliseconds: 46), (timer) {
+    Timer.periodic(const Duration(milliseconds: 40), (timer) {
       time += 0.04;
       height = -4.9 * time * time + 2.8 * time;
       setState(() {
         birdYaxis = initialHeight - height;
       });
       setState(() {
-        if (barrierX1 < -1.3) {
+        if (barrierX1 < -1.7) {
           barrierX1 += 3.5;
         } else {
           barrierX1 -= 0.05;
         }
       });
       setState(() {
-        if (barrierX2 < -1.3) {
+        if (barrierX2 < -1.7) {
           barrierX2 += 4.5;
         } else {
           barrierX2 -= 0.05;
@@ -156,8 +166,8 @@ class _HomePageState extends State<HomePage> {
 
       if (birdYaxis < -1.1 || birdYaxis > 1.1) {
         timer.cancel();
-
-        resetGame();
+        faceDead();
+        // resetGame();
       }
     });
   }
@@ -167,14 +177,13 @@ class _HomePageState extends State<HomePage> {
     return GestureDetector(
         onTap: () {
           debugPrint("game started: " + gameHasStarted.toString());
-          if (gameHasStarted) {
+          if (gameEnded) {
+            changeGameText();
+            resetGame();
+          } else if (gameHasStarted) {
             gameHasStarted = gameHasStarted ? true : false;
             debugPrint("game continues");
             jump();
-            // if(faceDead() == true){
-            //   print("noldu");
-            //   resetGame();
-            // }
           } else {
             debugPrint("game is started");
             startGame();
@@ -194,16 +203,6 @@ class _HomePageState extends State<HomePage> {
                         face: changingFace,
                       ),
                     ),
-                    Container(
-                      alignment: const Alignment(0, -0.3),
-                      child: gameHasStarted
-                          ? null
-                          : const Text(
-                              "T A P   T O   P L A Y",
-                              style: TextStyle(
-                                  fontSize: 30, color: AppColors.white),
-                            ),
-                    ),
                     AnimatedContainer(
                         alignment: Alignment(barrierX1, 1.1),
                         duration: const Duration(milliseconds: 0),
@@ -220,6 +219,36 @@ class _HomePageState extends State<HomePage> {
                         alignment: Alignment(barrierX2, -1.1),
                         duration: const Duration(milliseconds: 0),
                         child: const MyBarrier(size: 250.0)),
+                    Container(
+                      alignment: const Alignment(0, -0.3),
+                      child: gameHasStarted && gameEnded
+                          ? null
+                          : const Text(
+                              "B A Ş L A",
+                              style: TextStyle(
+                                  fontSize: 30, color: AppColors.white),
+                            ),
+                    ),
+                    Container(
+                      alignment: const Alignment(0, -0.3),
+                      child: gameEnded
+                          ? const Text(
+                              "O L U R   Ö Y L E",
+                              style: TextStyle(
+                                  fontSize: 30, color: AppColors.white),
+                            )
+                          : null,
+                    ),
+                    Container(
+                      alignment: const Alignment(0, -0.1),
+                      child: gameEnded
+                          ? const Text(
+                              "-- O L U R   M U   Ö Y L E !",
+                              style: TextStyle(
+                                  fontSize: 26, color: AppColors.white),
+                            )
+                          : null,
+                    ),
                   ])),
               Container(
                 height: 15,
