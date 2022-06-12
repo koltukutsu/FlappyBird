@@ -73,11 +73,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   void endGame() {
+    gameEnded = true;
     setState(() {
       gameEnded = true;
     });
     saveBestScoreAttributes();
-    getBestScoreAttributes();
   }
 
   void resetGame() {
@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> saveBestScoreAttributes() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     debugPrint("best score:$score > $bestScore");
-    if (score > bestScore) {
+    if (score >= bestScore) {
       await prefs.setInt("bestScoreInt", score);
       await prefs.setString("bestScoreImagePath", changingFace);
       await prefs.setString("bestScoreSoundPath", "");
@@ -116,7 +116,7 @@ class _HomePageState extends State<HomePage> {
     debugPrint(bestScoreImagePathTaken);
     if (bestScoreIntTaken == null) {
       setState(() {
-        bestScore = 100;
+        bestScore = 0;
       });
     } else {
       setState(() {
@@ -260,8 +260,8 @@ class _HomePageState extends State<HomePage> {
     if (gameEnded) {
       // print(1);
       debugPrint("game is ended");
-
       changeGameText();
+      getBestScoreAttributes();
       resetGame();
     } else if (gameHasStarted) {
       // print(2);
@@ -270,6 +270,7 @@ class _HomePageState extends State<HomePage> {
       jump();
     } else {
       // print(3);
+      getBestScoreAttributes();
       debugPrint("game is started");
       startGame();
     }

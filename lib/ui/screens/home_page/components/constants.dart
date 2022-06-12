@@ -25,6 +25,6 @@ final faceSlogans = {
     "B İ Ş E Y   D İ C E M"
   ],
   // ismail
-  "lib/assets/images/ismail_son.png": ["", ""],
-  "lib/assets/images/ismail_son_2.png": ["", ""],
+  "lib/assets/images/ismail_son.png": ["K A Y A   B İ R Ş E Y  D E M E D İ", "K A Y A   A H   K A Y A"],
+  "lib/assets/images/ismail_son_2.png": ["K A Y A   B İ R Ş E Y  D E M E D İ", "K A Y A   A H   K A Y A"],
 };
