@@ -213,7 +213,7 @@ class _HomePageState extends State<HomePage> {
       return true; // done
     }
 
-    if (barrierX2HeightRatio < birdYaxis + birdSize * collisionTolerance &&
+    if (barrierX2HeightRatio < birdYaxis + birdSize * collisionTolerance * 2 &&
         birdYaxis > 0 &&
         (barrierX2 - barrierX2WidthRatio / 2 < birdSize / 2 && barrierX2 > 0)) {
       debugPrint("barrier1 ground");
