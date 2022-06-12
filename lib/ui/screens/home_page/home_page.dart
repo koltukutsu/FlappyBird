@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   String changingFace = "lib/assets/images/flappy_face.png";
   String firstSlogan = "";
   String secondSlogan = "";
-  double birdSize = 0.22;
+  double birdSize = 0.15;
 
   //score related variables
   int score = 0;
@@ -37,6 +37,7 @@ class _HomePageState extends State<HomePage> {
   double initialHeight = 0; // late double initialHeight = birdYaxis;
   double velocity = 2.8;
   double acceleration = -4.9;
+  double collisionTolerance = 0.98; // which means 2% is the tolerance
 
   //flex related variables
   int skyFlexRatio = 4;
@@ -49,10 +50,10 @@ class _HomePageState extends State<HomePage> {
   double barrierYRatioBottom = -1.1;
   double barrierYRatioSky = 1.1;
 
-  double barrierX1WidthRatio = 0.2; // 1 means the entire width of the sky area
+  double barrierX1WidthRatio = 0.25; // 1 means the entire width of the sky area
   double barrierX1HeightRatio = 0.4; // 1 means the half of the sky area height
 
-  double barrierX2WidthRatio = 0.2; // 1 means the entire width of the sky area
+  double barrierX2WidthRatio = 0.3; // 1 means the entire width of the sky area
   double barrierX2HeightRatio = 0.6; // 1 means the half of the sky area height
 
   // game conditions
@@ -168,6 +169,8 @@ class _HomePageState extends State<HomePage> {
 
   void changeSlogan() {
     var takenSloganList = faceSlogans[changingFace]!;
+    print(changingFace);
+    print(takenSloganList);
     setState(() {
       firstSlogan = takenSloganList[0];
       secondSlogan = takenSloganList[1];
@@ -185,24 +188,35 @@ class _HomePageState extends State<HomePage> {
   }
 
   bool faceDead() {
-    setState(() {
-      gameEnded = true;
-    });
-    if (birdYaxis < -1.1 || birdYaxis > 1.1) {
-      debugPrint("1");
+    if (birdYaxis < -1.3 || birdYaxis > 1.3) {
+      debugPrint("sky or ground is passed");
+      return true;
+    }
+    if (-1 * barrierX1HeightRatio > birdYaxis + birdSize * collisionTolerance  &&
+        birdYaxis < 0 &&
+        (barrierX1 - barrierX1WidthRatio / 4 < birdSize / 2 && barrierX1 > 0)) {
+      debugPrint("barrier1 sky");
+      return true; // done
+    }
+
+    if (barrierX1HeightRatio < birdYaxis - birdSize * collisionTolerance &&
+        birdYaxis > 0 &&
+        (barrierX1 - barrierX1WidthRatio / 4 < birdSize / 2 && barrierX1 > 0)) {
+      debugPrint("barrier1 ground");
       return true;
     }
 
-    if (barrierX1 <= 30 &&
-        barrierX1 + 100 >= -30 &&
-        (birdYaxis <= -1 + 200 || birdYaxis + 30 >= 1 - 200)) {
-      debugPrint("2");
-      return true;
+    if (-1 * barrierX2HeightRatio > birdYaxis + birdSize * collisionTolerance &&
+        birdYaxis < 0 &&
+        (barrierX2 - barrierX2WidthRatio / 4 < birdSize / 2 && barrierX2 > 0)) {
+      debugPrint("barrier2 sky");
+      return true; // done
     }
-    if (barrierX2 <= 30 &&
-        barrierX2 + 100 >= -30 &&
-        (birdYaxis <= -1 + 250 || birdYaxis + 30 >= 1 - 250)) {
-      debugPrint("3");
+
+    if (barrierX2HeightRatio < birdYaxis + birdSize * collisionTolerance &&
+        birdYaxis > 0 &&
+        (barrierX2 - barrierX2WidthRatio / 2 < birdSize / 2 && barrierX2 > 0)) {
+      debugPrint("barrier1 ground");
       return true;
     }
     return false;
@@ -217,23 +231,24 @@ class _HomePageState extends State<HomePage> {
       height = acceleration * time * time + velocity * time;
       setState(() {
         birdYaxis = initialHeight - height;
+        debugPrint(birdYaxis.toString());
       });
       setState(() {
-        if (barrierX1 < -1.7) {
-          barrierX1 += 3.5;
+        if (barrierX1 < -1.9) {
+          barrierX1 += 4.0;
         } else {
           barrierX1 -= 0.05;
         }
       });
       setState(() {
-        if (barrierX2 < -1.7) {
+        if (barrierX2 < -2.2) {
           barrierX2 += 4.5;
         } else {
           barrierX2 -= 0.05;
         }
       });
 
-      if (birdYaxis < -1.1 || birdYaxis > 1.1) {
+      if (faceDead()) {
         timer.cancel();
         endGame();
       }
@@ -381,7 +396,7 @@ class _HomePageState extends State<HomePage> {
                               shape: NeumorphicShape.concave,
                               boxShape: NeumorphicBoxShape.roundRect(
                                   BorderRadius.circular(100)),
-                              depth: 5,
+                              depth: 0,
                               lightSource: LightSource.topRight,
                               color: Colors.transparent),
                           child: MyFlappy(

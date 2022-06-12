@@ -16,15 +16,15 @@ final faceSlogans = {
     "K E N D İ N E  K A T  K A T  K A T"
   ],
   // ahmet
-  "lib/assets/images/ahmet_2_son.png": ["", ""],
-  "lib/assets/images/ahmet_son.png": ["", ""],
+  "lib/assets/images/ahmet_2_son.png": [
+    "K A N K A . . .",
+    "B İ Ş E Y   D İ C E M"
+  ],
+  "lib/assets/images/ahmet_son.png": [
+    "K A N K A . . .",
+    "B İ Ş E Y   D İ C E M"
+  ],
   // ismail
-  "lib/assets/images/ismail_son.png": [
-    "K A N K A . . .",
-    "B İ Ş E Y   D İ C E M"
-  ],
-  "lib/assets/images/ismail_son_2.png": [
-    "K A N K A . . .",
-    "B İ Ş E Y   D İ C E M"
-  ],
+  "lib/assets/images/ismail_son.png": ["", ""],
+  "lib/assets/images/ismail_son_2.png": ["", ""],
 };
