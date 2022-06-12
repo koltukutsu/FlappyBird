@@ -192,7 +192,7 @@ class _HomePageState extends State<HomePage> {
       debugPrint("sky or ground is passed");
       return true;
     }
-    if (-1 * barrierX1HeightRatio > birdYaxis + birdSize * collisionTolerance  &&
+    if (-1 * barrierX1HeightRatio > birdYaxis + birdSize * collisionTolerance &&
         birdYaxis < 0 &&
         (barrierX1 - barrierX1WidthRatio / 4 < birdSize / 2 && barrierX1 > 0)) {
       debugPrint("barrier1 sky");
@@ -260,8 +260,8 @@ class _HomePageState extends State<HomePage> {
     if (gameEnded) {
       // print(1);
       debugPrint("game is ended");
-      changeGameText();
       getBestScoreAttributes();
+      changeGameText();
       resetGame();
     } else if (gameHasStarted) {
       // print(2);
