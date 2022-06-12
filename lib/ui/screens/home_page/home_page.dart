@@ -3,8 +3,9 @@ import "dart:math";
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flappy_bird/ui/screens/home_page/components/barriers.dart';
 import 'package:flappy_bird/ui/screens/home_page/components/bird.dart';
-import 'package:flappy_bird/ui/theme/AppColors.dart';
-import 'package:flutter/material.dart';
+import 'package:flappy_bird/ui/screens/home_page/components/constants.dart';
+import 'package:flappy_bird/ui/theme/app_colors.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,18 +19,22 @@ class _HomePageState extends State<HomePage> {
   // assets
   AudioPlayer audioPlayer = AudioPlayer();
   String changingFace = "lib/assets/images/flappy_face.png";
+  String firstSlogan = "";
+  String secondSlogan = "";
+  double birdSize = 0.22;
 
   //score related variables
   int score = 0;
   int bestScore = 0;
-  late String bestScoreImagePath;
-  late String bestScoreSoundPath;
+  String bestFaceImagePath = "lib/assets/images/flappy_face.png";
+  String bestScoreSoundPath = "";
 
   // our bird or flappyFace and its motion related variables
   double birdYaxis = 0;
   double time = 0;
+  double timeStep = 0.04;
   double height = 0;
-  late double initialHeight = birdYaxis;
+  double initialHeight = 0; // late double initialHeight = birdYaxis;
   double velocity = 2.8;
   double acceleration = -4.9;
 
@@ -38,23 +43,25 @@ class _HomePageState extends State<HomePage> {
   int groundFlexRatio = 1;
 
   // barriers
+  // (-1, -1) means top left, (1, 1) means bottom right, (0, 0) is the center
   double barrierX1 = 1; // out of 2 total
   double barrierX2 = 2.7;
   double barrierYRatioBottom = -1.1;
   double barrierYRatioSky = 1.1;
 
-  double barrierX1WidthRatio = 0.2;
-  double barrierX1HeightRatio = 0.5;
+  double barrierX1WidthRatio = 0.2; // 1 means the entire width of the sky area
+  double barrierX1HeightRatio = 0.4; // 1 means the half of the sky area height
 
-  double barrierX2WidthRatio = 0.2;
-  double barrierX2HeightRatio = 0.6;
+  double barrierX2WidthRatio = 0.2; // 1 means the entire width of the sky area
+  double barrierX2HeightRatio = 0.6; // 1 means the half of the sky area height
 
   // game conditions
   bool gameHasStarted = false;
   bool gameEnded = false;
 
   @override
-  initState() {
+  void initState() {
+    super.initState();
     getBestScoreAttributes();
   }
 
@@ -62,6 +69,14 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       gameEnded = false;
     });
+  }
+
+  void endGame() {
+    setState(() {
+      gameEnded = true;
+    });
+    saveBestScoreAttributes();
+    getBestScoreAttributes();
   }
 
   void resetGame() {
@@ -81,32 +96,54 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> saveBestScoreAttributes() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    await prefs.setInt("bestScoreInt", bestScore);
-    await prefs.setString("bestScoreImagePath", "");
-    await prefs.setString("bestScoreSoundPath", "");
+    debugPrint("best score:$score > $bestScore");
+    if (score > bestScore) {
+      await prefs.setInt("bestScoreInt", score);
+      await prefs.setString("bestScoreImagePath", changingFace);
+      await prefs.setString("bestScoreSoundPath", "");
+    }
   }
 
   Future<void> getBestScoreAttributes() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    final int? bestScoreIntTaken = prefs.getInt("bestSoreInt");
-    final String? bestScoreImagePathTaken = prefs.getString("bestSoreInt");
-    final String? bestScoreSoundPathTaken = prefs.getString("bestSoreInt");
-
-    setState(() {
-      bestScore = bestScoreIntTaken == null ? 0 : bestScoreIntTaken;
-      bestScoreImagePath = bestScoreImagePathTaken == null
-          ? "fillImage"
-          : bestScoreImagePathTaken;
-      bestScoreSoundPath = bestScoreSoundPathTaken == null
-          ? "fillSound"
-          : bestScoreSoundPathTaken;
-    });
+    final int? bestScoreIntTaken = prefs.getInt("bestScoreInt");
+    final String? bestScoreImagePathTaken =
+        prefs.getString("bestScoreImagePath");
+    final String? bestScoreSoundPathTaken =
+        prefs.getString("bestScoreSoundPath");
+    debugPrint(bestScoreImagePathTaken);
+    if (bestScoreIntTaken == null) {
+      setState(() {
+        bestScore = 100;
+      });
+    } else {
+      setState(() {
+        bestScore = bestScoreIntTaken;
+      });
+    }
+    if (bestScoreImagePathTaken == null) {
+      setState(() {
+        bestFaceImagePath = changingFace;
+      });
+    } else {
+      setState(() {
+        bestFaceImagePath = bestScoreImagePathTaken;
+      });
+    }
+    if (bestScoreSoundPathTaken == null) {
+      setState(() {
+        bestScoreSoundPath = "fillSound";
+      });
+    } else {
+      setState(() {
+        bestScoreSoundPath = bestScoreSoundPathTaken;
+      });
+    }
   }
 
   void playLocal() async {
-    int result = await audioPlayer.play("", isLocal: true);
+    int takenAudio = await audioPlayer.play(bestScoreSoundPath, isLocal: true);
   }
 
   void changeFace() {
@@ -122,15 +159,24 @@ class _HomePageState extends State<HomePage> {
     final randomSeed = Random();
     faces.remove(changingFace);
     var faceElement = faces[randomSeed.nextInt(faces.length)];
-    debugPrint(faceElement);
+    // debugPrint(faceElement);
 
     setState(() {
       changingFace = faceElement;
     });
   }
 
+  void changeSlogan() {
+    var takenSloganList = faceSlogans[changingFace]!;
+    setState(() {
+      firstSlogan = takenSloganList[0];
+      secondSlogan = takenSloganList[1];
+    });
+  }
+
   void jump() {
     changeFace();
+    changeSlogan();
     setState(() {
       time = 0;
       score += 1;
@@ -143,20 +189,20 @@ class _HomePageState extends State<HomePage> {
       gameEnded = true;
     });
     if (birdYaxis < -1.1 || birdYaxis > 1.1) {
-      print("1");
+      debugPrint("1");
       return true;
     }
 
     if (barrierX1 <= 30 &&
         barrierX1 + 100 >= -30 &&
         (birdYaxis <= -1 + 200 || birdYaxis + 30 >= 1 - 200)) {
-      print("2");
+      debugPrint("2");
       return true;
     }
     if (barrierX2 <= 30 &&
         barrierX2 + 100 >= -30 &&
         (birdYaxis <= -1 + 250 || birdYaxis + 30 >= 1 - 250)) {
-      print("3");
+      debugPrint("3");
       return true;
     }
     return false;
@@ -167,7 +213,7 @@ class _HomePageState extends State<HomePage> {
       gameHasStarted = true;
     });
     Timer.periodic(const Duration(milliseconds: 40), (timer) {
-      time += 0.04;
+      time += timeStep;
       height = acceleration * time * time + velocity * time;
       setState(() {
         birdYaxis = initialHeight - height;
@@ -189,31 +235,35 @@ class _HomePageState extends State<HomePage> {
 
       if (birdYaxis < -1.1 || birdYaxis > 1.1) {
         timer.cancel();
-        resetGame();
+        endGame();
       }
     });
+  }
+
+  void onTapFunction() {
+    // debugPrint("game started: " + gameHasStarted.toString());
+    if (gameEnded) {
+      // print(1);
+      debugPrint("game is ended");
+
+      changeGameText();
+      resetGame();
+    } else if (gameHasStarted) {
+      // print(2);
+      gameHasStarted = gameHasStarted ? true : false;
+      debugPrint("game continues");
+      jump();
+    } else {
+      // print(3);
+      debugPrint("game is started");
+      startGame();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () {
-          debugPrint("game started: " + gameHasStarted.toString());
-          if (gameEnded) {
-            print(1);
-            changeGameText();
-            resetGame();
-          } else if (gameHasStarted) {
-            print(2);
-            gameHasStarted = gameHasStarted ? true : false;
-            debugPrint("game continues");
-            jump();
-          } else {
-            print(3);
-            debugPrint("game is started");
-            startGame();
-          }
-        },
+        onTap: onTapFunction,
         child: Scaffold(
           body: Column(
             children: [
@@ -226,6 +276,7 @@ class _HomePageState extends State<HomePage> {
                       color: AppColors.blue,
                       child: MyFlappy(
                         face: changingFace,
+                        size: birdSize,
                       ),
                     ),
                     AnimatedContainer(
@@ -277,20 +328,20 @@ class _HomePageState extends State<HomePage> {
                     Container(
                       alignment: const Alignment(0, -0.3),
                       child: gameEnded
-                          ? const Text(
-                              "O L U R   Ö Y L E",
-                              style: TextStyle(
-                                  fontSize: 30, color: AppColors.white),
+                          ? Text(
+                              firstSlogan,
+                              style: const TextStyle(
+                                  fontSize: 20, color: AppColors.white),
                             )
                           : null,
                     ),
                     Container(
                       alignment: const Alignment(0, -0.1),
                       child: gameEnded
-                          ? const Text(
-                              "-- O L U R   M U   Ö Y L E !",
-                              style: TextStyle(
-                                  fontSize: 26, color: AppColors.white),
+                          ? Text(
+                              secondSlogan,
+                              style: const TextStyle(
+                                  fontSize: 20, color: AppColors.white),
                             )
                           : null,
                     ),
@@ -324,6 +375,20 @@ class _HomePageState extends State<HomePage> {
                             )
                           ],
                         ),
+                        NeumorphicButton(
+                          onPressed: onTapFunction,
+                          style: NeumorphicStyle(
+                              shape: NeumorphicShape.concave,
+                              boxShape: NeumorphicBoxShape.roundRect(
+                                  BorderRadius.circular(100)),
+                              depth: 5,
+                              lightSource: LightSource.topRight,
+                              color: Colors.transparent),
+                          child: MyFlappy(
+                            face: bestFaceImagePath,
+                            size: birdSize,
+                          ),
+                        ),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -336,7 +401,7 @@ class _HomePageState extends State<HomePage> {
                               height: 15,
                             ),
                             Text(
-                              bestScore.toString(),
+                              "$bestScore",
                               style: const TextStyle(
                                   color: AppColors.white, fontSize: 35),
                             )
