@@ -377,7 +377,7 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const Text(
-                              "Score",
+                              "Skor",
                               style: TextStyle(
                                   color: AppColors.white, fontSize: 20),
                             ),
@@ -409,7 +409,7 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const Text(
-                              "Best",
+                              "En İyi",
                               style: TextStyle(
                                   color: AppColors.white, fontSize: 20),
                             ),
