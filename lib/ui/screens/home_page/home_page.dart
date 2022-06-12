@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
   //score related variables
   int score = 0;
   int bestScore = 0;
-  String bestFaceImagePath = "lib/assets/images/flappy_face.png";
+  String bestFaceImagePath = "lib/assets/images/question.png";
   String bestScoreSoundPath = "";
 
   // our bird or flappyFace and its motion related variables
@@ -125,7 +125,7 @@ class _HomePageState extends State<HomePage> {
     }
     if (bestScoreImagePathTaken == null) {
       setState(() {
-        bestFaceImagePath = changingFace;
+        bestFaceImagePath = "lib/assets/images/question.png";
       });
     } else {
       setState(() {
