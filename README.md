@@ -1,16 +1,12 @@
-# flappy_bird
+# FriendFaceFlappy
+I made this little game while my friends, whose faces are shown below and abusedly used in the game, were taking exam and me waiting for them. 
 
-A new Flutter project.
+| Friend | His Glorious Face |
+|---|---|
+|**Semih (Adaş)**|![Adas-Face](lib/assets/images/semih_2_son.png)|
+|**Ahmet**|![Ahmet-Face](lib/assets/images/ahmet_son.png)|
+|**İsmail**|![İsmail-Face](lib/assets/images/ismail_son.png)|
+|**Me**|![Me-Face](lib/assets/images/gercek_semih_son.png)|
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Gaming Video
+[![gaming-video](assets/README/intro.jpeg)](assets/README/gaming_video.mp4)
