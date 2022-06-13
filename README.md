@@ -8,6 +8,5 @@ I made this little game while my friends, whose faces are shown below and abused
 |**İsmail**|![İsmail-Face](lib/assets/images/ismail_son.png)|
 |**Me**|![Me-Face](lib/assets/images/gercek_semih_son.png)|
 
-## Gaming Video
-[![gaming-video](assets/README/intro.jpeg)](assets/README/playing.gif)
-[Full Video](assets/README/gaming_video.mp4)
+## [Gaming Video](assets/README/gaming_video.mp4)
+[gaming-video](assets/README/playing.gif)
