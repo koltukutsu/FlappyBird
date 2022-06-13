@@ -9,4 +9,4 @@ I made this little game while my friends, whose faces are shown below and abused
 |**Me**|![Me-Face](lib/assets/images/gercek_semih_son.png)|
 
 ## [Gaming Video](assets/README/gaming_video.mp4)
-[gaming-video](assets/README/playing.gif)
+![gaming-video](assets/README/playing.gif)
